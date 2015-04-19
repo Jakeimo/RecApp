@@ -3,6 +3,22 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="general">fruit</string>
-    <string name="fruit">apple banana orange</string>
+    <string-array name="folders">
+        <item>General</item>
+    </string-array>
+    <string-array name="general_array">
+        <item>Fruit</item>
+    </string-array>
+    <string-array name="general_fruit_array">
+        <item>Apple</item>
+        <item>Banana</item>
+        <item>Orange</item>
+    </string-array>
+    <string-array name="Jake_array">
+        <item>Family</item>
+    </string-array>
+    <string-array name="jake_family_array">
+        <item>Kath</item>
+        <item>Ben</item>
+    </string-array>
 </resources>
