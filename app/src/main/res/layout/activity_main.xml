@@ -10,8 +10,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
-        android:id="@+id/linearLayout"
-        android:layout_marginBottom="80dp">
+        android:id="@+id/imageLinearLayout"
+        android:layout_marginBottom="120dp">
 
         <TextView
             android:layout_width="fill_parent"
@@ -21,19 +21,21 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="343dp"
+            android:layout_height="match_parent"
             android:id="@+id/imageView"
             android:layout_gravity="center_horizontal"
             android:cropToPadding="false"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:clickable="true" />
     </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="120dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="400dp">
+        android:id="@+id/textLinearLayout"
+        android:layout_alignParentBottom="true">
 
         <TextView
             android:layout_width="fill_parent"

@@ -10,9 +10,9 @@
         <item>Fruit</item>
     </string-array>
     <string-array name="general_fruit_array">
-        <item>Apple</item>
-        <item>Banana</item>
-        <item>Orange</item>
+        <item>apple</item>
+        <item>banana</item>
+        <item>orange</item>
     </string-array>
     <string-array name="Jake_array">
         <item>Family</item>
