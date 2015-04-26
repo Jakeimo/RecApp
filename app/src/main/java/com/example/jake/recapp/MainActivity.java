@@ -2,11 +2,11 @@ package com.example.jake.recapp;
 
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,12 +14,9 @@ public class MainActivity extends ActionBarActivity {
 
     private String folder;
     private String subFolder;
-    private View.OnTouchListener imageTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            return false;
-        }
-    };
+    private String currentImage;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,18 +27,45 @@ public class MainActivity extends ActionBarActivity {
         setFolder("general");
         setSubFolder("fruit");
 
+        //Set breadcrumb text_expand
         String breadcrumbText = getFolder() + " > " + getSubFolder();
         TextView breadcrumb = (TextView)findViewById(R.id.breadcrumb);
         breadcrumb.setText(breadcrumbText);
 
+        //Load first image
         loadImage();
 
+        //Load click listener to image, which adds text_expand
         ImageView imageView = (ImageView)findViewById(R.id.imageView);
-        imageView.setOnTouchListener(imageTouchListener);
+        imageView.setOnClickListener(imageClickListener);
 
     }
+    public View.OnClickListener imageClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            loadText();
+        }
+    };
+    /*
+    * This method gets the current image name, splits it to get the specific image (as opposed to
+    * it's folder and subfolder), then sets that text_expand to the TextView
+    * */
+    public void loadText(){
+        String image = getCurrentImage();
 
+        //Split image into an array of folder-subfolder-name then capitalise name
+        String[] imageArray = image.split("_");
+        String imageName = imageArray[2];
+        //Gets the first letter, capitalises then combines with the rest of the lowercase string
+        String finalImageText = imageName.substring(0,1).toUpperCase() + imageName.substring(1);
 
+        //set associated image text_expand
+        TextView textView = (TextView) findViewById(R.id.ImageText);
+        textView.setText(finalImageText);
+
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.text_expand);
+        textView.startAnimation(anim);
+    }
 
     public void loadImage(){
         //Get all image names from string array in strings.xml, and put them in a String Array []
@@ -50,22 +74,26 @@ public class MainActivity extends ActionBarActivity {
         int arrayId = res.getIdentifier(stringArray, "array", getPackageName());
         String[] objects = res.getStringArray(arrayId);
 
-        //get image identifier, so it can be manipulated
+        //get image identifier, so it can be manipulated, and set image name
         String imageLocation = getFolder() + "_" + getSubFolder() + "_" + objects[0];
         int imageId = res.getIdentifier(imageLocation, "drawable", getPackageName());
+        setCurrentImage(res.getResourceEntryName(imageId));
 
+        //Sets sample size to reduce quality of image
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize =  getSampleSize(imageId);
         options.inJustDecodeBounds = false;
 
         ImageView imageView = (ImageView)findViewById(R.id.imageView);
         imageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), imageId, options));
-
-        //image.setImageResource(imageId);
-        Log.d("ImageID", Integer.toString(imageId));
-        Log.d("ImageLocation var", imageLocation);
     }
 
+    /*
+    * Uses fixed var's for height and width of ImageView.
+    * If image is larger than these fixed variables, then it will be halved
+    *
+    * Returns: how many times the image needs to be halved (i.e. 1/2 1/4 1/6 etc)
+    * */
     public int getSampleSize(int imageId){
         int deviceHeight = 1000;
         int deviceWidth = 960;
@@ -77,8 +105,6 @@ public class MainActivity extends ActionBarActivity {
 
         int imageHeight = options.outHeight;
         int imageWidth = options.outWidth;
-        Log.d("Image Height", Integer.toString(imageHeight));
-        Log.d("Image Width", Integer.toString(imageWidth));
 
         int newImageHeight = imageHeight, newImageWidth = imageWidth;
 
@@ -88,10 +114,7 @@ public class MainActivity extends ActionBarActivity {
             newImageWidth = imageWidth/sampleSize;
 
             sampleSize+=2;
-            Log.d("New Image Height", Integer.toString(newImageHeight));
-            Log.d("New Image Width", Integer.toString(newImageWidth));
         }
-        Log.d("Scale Factor", Integer.toString(sampleSize));
 
         return sampleSize;
     }
@@ -112,6 +135,17 @@ public class MainActivity extends ActionBarActivity {
     public void setSubFolder(String subFolder) {
         this.subFolder = subFolder;
     }
+
+
+    public String getCurrentImage() {
+        return currentImage;
+    }
+
+    public void setCurrentImage(String currentImage) {
+        this.currentImage = currentImage;
+    }
+
+
 
 
 
