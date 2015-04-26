@@ -1,11 +1,10 @@
-package com.example.jake.recapp;
+package com.example.jake.hhapp;
 
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -52,13 +51,18 @@ public class MainActivity extends ActionBarActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    //Refresh prompt after 1500ms
+                    //Load image after animation is finished
+                    clearText();
                     loadImage();
-                    Log.d("Load image triggered","");
                 }
-            }, 2200);
+            }, 3000);
         }
     };
+
+    public void clearText() {
+        TextView textView = (TextView) findViewById(R.id.ImageText);
+        textView.setText("");
+    }
 
     /*
     * This method gets the current image name, splits it to get the specific image (as opposed to
@@ -96,7 +100,6 @@ public class MainActivity extends ActionBarActivity {
                 result = rnd.nextInt(3);
             } while( result == getPreviousResult());
 
-        Log.d("Result:", Integer.toString(result));
         setPreviousResult(result);
 
         //get image identifier, so it can be manipulated, and set image name
