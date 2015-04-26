@@ -3,19 +3,23 @@ package com.example.jake.recapp;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Random;
+
 public class MainActivity extends ActionBarActivity {
 
     private String folder;
     private String subFolder;
     private String currentImage;
-
+    private int previousResult=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +48,21 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onClick(View v) {
             loadText();
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //Refresh prompt after 1500ms
+                    loadImage();
+                    Log.d("Load image triggered","");
+                }
+            }, 2200);
         }
     };
+
     /*
     * This method gets the current image name, splits it to get the specific image (as opposed to
-    * it's folder and subfolder), then sets that text_expand to the TextView
+    * it's folder and subfolder), then sets that text_expand to the TextView, and applies animation
     * */
     public void loadText(){
         String image = getCurrentImage();
@@ -63,6 +77,7 @@ public class MainActivity extends ActionBarActivity {
         TextView textView = (TextView) findViewById(R.id.ImageText);
         textView.setText(finalImageText);
 
+        //Load animation and apply it to Text
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.text_expand);
         textView.startAnimation(anim);
     }
@@ -74,8 +89,18 @@ public class MainActivity extends ActionBarActivity {
         int arrayId = res.getIdentifier(stringArray, "array", getPackageName());
         String[] objects = res.getStringArray(arrayId);
 
+        int result;
+            do{
+                Random rnd = new Random();
+                rnd.setSeed(System.currentTimeMillis());
+                result = rnd.nextInt(3);
+            } while( result == getPreviousResult());
+
+        Log.d("Result:", Integer.toString(result));
+        setPreviousResult(result);
+
         //get image identifier, so it can be manipulated, and set image name
-        String imageLocation = getFolder() + "_" + getSubFolder() + "_" + objects[0];
+        String imageLocation = getFolder() + "_" + getSubFolder() + "_" + objects[result];
         int imageId = res.getIdentifier(imageLocation, "drawable", getPackageName());
         setCurrentImage(res.getResourceEntryName(imageId));
 
@@ -145,9 +170,11 @@ public class MainActivity extends ActionBarActivity {
         this.currentImage = currentImage;
     }
 
+    public int getPreviousResult() {
+        return previousResult;
+    }
 
-
-
-
-
+    public void setPreviousResult(int previousResult) {
+        this.previousResult = previousResult;
+    }
 }
