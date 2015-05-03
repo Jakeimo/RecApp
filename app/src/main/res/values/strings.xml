@@ -18,7 +18,8 @@
         <item>Family</item>
     </string-array>
     <string-array name="jake_family_array">
-        <item>Kath</item>
-        <item>Ben</item>
+        <item>mum</item>
+        <item>purps</item>
+        <item>hannah</item>
     </string-array>
 </resources>

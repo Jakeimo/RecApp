@@ -2,9 +2,11 @@ package com.example.jake.hhapp;
 
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -36,7 +38,9 @@ public class MainActivity extends ActionBarActivity {
         breadcrumb.setText(breadcrumbText);
 
         //Load first image
-        loadImage();
+        try{
+            loadImage();
+        }catch (Exception e){}
 
         //Load click listener to image, which adds text_expand
         ImageView imageView = (ImageView)findViewById(R.id.imageView);
@@ -46,18 +50,45 @@ public class MainActivity extends ActionBarActivity {
     public View.OnClickListener imageClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            loadText();
+            try {
+                loadText();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                loadSound();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    //Load image after animation is finished
-                    clearText();
-                    loadImage();
-                }
-            }, 3000);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Load image after animation is finished
+                        clearText();
+                        loadImage();
+                    }
+                }, 3000);
+
         }
     };
+
+    private void loadSound() {
+        String image = getCurrentImage().split("_")[2];
+
+        Resources res = getResources();
+        int fileId = res.getIdentifier(image, "raw", getPackageName());
+        Log.d("Current image", image);
+        Log.d("fileId", Integer.toString(fileId));
+        try {
+            MediaPlayer mp = MediaPlayer.create(this, fileId);
+            mp.start();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+        Log.d("Audio", "Played");
+
+    }
 
     public void clearText() {
         TextView textView = (TextView) findViewById(R.id.ImageText);
