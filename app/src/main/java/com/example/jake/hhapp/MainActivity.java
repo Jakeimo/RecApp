@@ -27,12 +27,11 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //currently hardcoded, should be dynamically generated later on e.g. user chooses folder and subfolder
-        //Tested for different arrays
+        //sets current folder and subfolder
         setFolder("general");
         setSubFolder("fruit");
 
-        //Set breadcrumb text_expand
+        //Set breadcrumb
         String breadcrumbText = getFolder() + " > " + getSubFolder();
         TextView breadcrumb = (TextView)findViewById(R.id.breadcrumb);
         breadcrumb.setText(breadcrumbText);
@@ -40,26 +39,58 @@ public class MainActivity extends ActionBarActivity {
         //Load first image
         try{
             loadImage();
-        }catch (Exception e){}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
-        //Load click listener to image, which adds text_expand
+        //Load click listener to image
         ImageView imageView = (ImageView)findViewById(R.id.imageView);
         imageView.setOnClickListener(imageClickListener);
 
+        //Load click listener for textview
+        TextView text = (TextView)findViewById(R.id.breadcrumb);
+        text.setOnClickListener(textViewListener);
+
     }
+
+    public View.OnClickListener textViewListener = new View.OnClickListener(){
+        public void onClick(View v){
+
+            //Switch between general and jake
+            if(getFolder().equals("general")){
+                setFolder("jake");
+                setSubFolder("family");
+            } else {
+                setFolder("general");
+                setSubFolder("fruit");
+            }
+
+            //Update breadcrumb
+            String breadcrumbText = getFolder() + " > " + getSubFolder();
+            TextView breadcrumb = (TextView)findViewById(R.id.breadcrumb);
+            breadcrumb.setText(breadcrumbText);
+
+        }
+    };
+
     public View.OnClickListener imageClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
+            //Catch for missing text
             try {
                 loadText();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            //Catch for missing sound
             try {
                 loadSound();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            //Wait before next image is generated
             final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -73,8 +104,12 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
+    /*
+    Plays associated sound file if available
+     */
     private void loadSound() {
-        String image = getCurrentImage().split("_")[2];
+        //get just image name (remove folder and subfolder
+        String image = getCurrentImage();
 
         Resources res = getResources();
         int fileId = res.getIdentifier(image, "raw", getPackageName());
